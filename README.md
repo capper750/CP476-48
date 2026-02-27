@@ -4,6 +4,14 @@ A simple web-based personal finance tracker that allows users to add transaction
 
 This project is built using HTML, CSS, and JavaScript with browser localStorage used for temporary data persistence.
 
+Team Member Contribution: 
+Front-End Development: Andrew and Justin 
+Back-End Skeleton: Erika 
+Database Design Package: Erika
+Kanban Board Updates: Team 
+Wiki Updates / Meeting Notes: Team
+README Updates: Justin 
+
 ---
 
 ## Features
