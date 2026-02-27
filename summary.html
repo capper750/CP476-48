@@ -1,11 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finance Tracker - Category Summary</title>
+  <link rel="stylesheet" href="app.css" />
 </head>
 <body>
-    
+
+  <header>
+    <h1>Finance Tracker</h1>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="add.html">Add Transaction</a>
+      <a href="history.html">History</a>
+      <a href="summary.html" class="active">Category Summary</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Category Spending Summary</h2>
+      <p>This page shows total spending by category (expenses only), sorted highest to lowest.</p>
+    </section>
+
+    <section>
+      <h2>Totals</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Total Spent</th>
+          </tr>
+        </thead>
+        <tbody id="categoryTbody">
+          <tr>
+            <td colspan="2">No expense transactions yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="storage.js"></script>
+  <script src="summary.js"></script>
 </body>
 </html>
