@@ -13,35 +13,21 @@ Kanban Board Updates: Team
 Wiki Updates / Meeting Notes: Team
 README Updates: Justin 
 
----
 
-## Features
+Front-End Setup: 
 
-### Dashboard
-- Displays total income
-- Displays total expenses
-- Displays net balance
-- Shows most recent transactions
-<img width="1203" height="856" alt="image" src="https://github.com/user-attachments/assets/e6a799f3-4a02-452d-b3d9-f3f177820f33" />
+1. Download or clone the repo:
+  Download ZIP, unzip it or
+  git clone <repo-url>
+2. Open the project folder in IDE.
+3. Install the extension: Live Server (by Ritwick Dey).
+4. In VS Code, right-click dashboard.html → Open with Live Server.
 
+The app will open in your browser at http://127.0.0.1:5500/ (or similar).
 
-### Add Transaction
-- Add income or expense
-- Select category
-- Add date and description
-- Form validation
-- Saves to localStorage
+Back-End Setup:
 
-### History
-- View all transactions
-- Filter by date range
-- Delete transactions
-
-### Category Summary
-- Shows total spending by category
-- Expenses only
-- Sorted highest to lowest
-
----
-
-## Project Structure
+1. ensure node.js and npm are installed on your laptop
+2. Open terminal and run the repository from the terminal
+3. Start the server from node server.js
+4. Server will display a message that it is running from local host or an error message if it cannot run
