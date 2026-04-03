@@ -3,6 +3,7 @@ const router = express.Router();
 const transactionController = require('../controllers/transactionController');
 
 router.post('/add', transactionController.addTransaction);
-router.get('/history', transactionController.getHistory);
+router.get('/', transactionController.getTransactions);
+router.delete('/:id', transactionController.deleteTransaction);
 
 module.exports = router;

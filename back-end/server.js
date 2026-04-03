@@ -1,11 +1,11 @@
- const express = require('express');
+const express = require('express');
+const cors = require('cors');
 const app = express();
 const transactionRoutes = require('./routes/transactionRoutes');
 
+app.use(cors());
 app.use(express.json());
-app.get('/', (req, res) => {
-    res.send('API is running');
-});
+
 app.use('/api/transactions', transactionRoutes);
 
 const PORT = 3000;
