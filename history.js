@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const tbody = document.getElementById("transactionsTbody");
   const form = document.getElementById("filterForm");
   const startInput = document.getElementById("startDate");
@@ -8,90 +8,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!tbody) return;
 
-  function render(transactions) {
+  async function render(transactions) {
     tbody.innerHTML = "";
 
     if (transactions.length === 0) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 6;
-      td.textContent = "No transactions yet.";
-      tr.appendChild(td);
-      tbody.appendChild(tr);
+      tbody.innerHTML = "<tr><td colspan='6'>No transactions yet.</td></tr>";
       return;
     }
 
-    const sorted = [...transactions].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
-    );
-
-    sorted.forEach(t => {
+    transactions.forEach(t => {
       const tr = document.createElement("tr");
-
-      const dateTd = document.createElement("td");
-      dateTd.textContent = t.date;
-
-      const typeTd = document.createElement("td");
-      typeTd.textContent = t.type;
-
-      const catTd = document.createElement("td");
-      catTd.textContent = t.category;
-
-      const descTd = document.createElement("td");
-      descTd.textContent = t.description || "";
-
-      const amtTd = document.createElement("td");
       const amount = Number(t.amount) || 0;
-      const sign = t.type === "expense" ? "-" : "+";
-      amtTd.textContent = `${sign}$${amount.toFixed(2)}`;
-      amtTd.className = t.type === "expense" ? "expense" : "income";
+      const isInc = (t.isIncome === 1 || t.type === "income");
+      const typeLabel = isInc ? "income" : "expense";
+      const sign = isInc ? "+" : "-";
+      const id = t.transactionID; // Matches your MySQL column
 
-      const actionTd = document.createElement("td");
-      const deleteBtn = document.createElement("button");
-      deleteBtn.textContent = "Delete";
-      deleteBtn.addEventListener("click", () => {
-        deleteTransaction(t.id);
-        render(getAllTransactions());
+      tr.innerHTML = `
+        <td>${t.date}</td>
+        <td>${typeLabel}</td>
+        <td>${t.category}</td>
+        <td>${t.description || ""}</td>
+        <td class="${typeLabel}">${sign}$${amount.toFixed(2)}</td>
+        <td><button class="delete-btn">Delete</button></td>
+      `;
+
+      const deleteBtn = tr.querySelector('.delete-btn');
+      deleteBtn.addEventListener('click', async () => {
+        if (confirm("Are you sure you want to delete this?")) {
+          try {
+            const response = await fetch(`http://localhost:3000/api/transactions/${id}`, {
+              method: 'DELETE'
+            });
+
+            if (response.ok) {
+              const updated = await getAllTransactions();
+              render(updated);
+            } else {
+              alert("Error deleting from database.");
+            }
+          } catch (err) {
+            console.error("Delete error:", err);
+          }
+        }
       });
 
-      actionTd.appendChild(deleteBtn);
-
-      tr.append(dateTd, typeTd, catTd, descTd, amtTd, actionTd);
       tbody.appendChild(tr);
     });
   }
 
-  render(getAllTransactions());
+  const initialTransactions = await getAllTransactions();
+  render(initialTransactions);
 
   if (form) {
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      errorEl.textContent = "";
-
       const start = startInput.value;
       const end = endInput.value;
-
       if (!start || !end) {
-        errorEl.textContent = "Please select both start and end dates.";
+        errorEl.textContent = "Please select both dates.";
         return;
       }
-
-      if (new Date(end) < new Date(start)) {
-        errorEl.textContent = "End date cannot be before start date.";
-        return;
-      }
-
-      const filtered = filterTransactionsByDate(start, end);
+      const all = await getAllTransactions();
+      const filtered = all.filter(t => {
+        const d = new Date(t.date);
+        return d >= new Date(start) && d <= new Date(end);
+      });
       render(filtered);
     });
   }
 
   if (clearBtn) {
-    clearBtn.addEventListener("click", () => {
-      errorEl.textContent = "";
+    clearBtn.addEventListener("click", async () => {
       startInput.value = "";
       endInput.value = "";
-      render(getAllTransactions());
+      const all = await getAllTransactions();
+      render(all);
     });
   }
 });

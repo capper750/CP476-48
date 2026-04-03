@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const incomeEl = document.getElementById("incomeTotal");
   const expenseEl = document.getElementById("expenseTotal");
   const netEl = document.getElementById("netTotal");
@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!incomeEl || !expenseEl || !netEl || !tbody) return;
 
-  const transactions = getAllTransactions();
+  // Wait for the data to arrive from the server
+  const transactions = await getAllTransactions();
   const totals = calculateTotals(transactions);
 
   incomeEl.textContent = `$${totals.income.toFixed(2)}`;
@@ -17,37 +18,24 @@ document.addEventListener("DOMContentLoaded", () => {
   tbody.innerHTML = "";
 
   if (recent.length === 0) {
-    const tr = document.createElement("tr");
-    const td = document.createElement("td");
-    td.colSpan = 5;
-    td.textContent = "No transactions yet.";
-    tr.appendChild(td);
-    tbody.appendChild(tr);
+    tbody.innerHTML = "<tr><td colspan='5'>No transactions yet.</td></tr>";
     return;
   }
 
   recent.forEach(t => {
     const tr = document.createElement("tr");
-
-    const dateTd = document.createElement("td");
-    dateTd.textContent = t.date;
-
-    const typeTd = document.createElement("td");
-    typeTd.textContent = t.type;
-
-    const catTd = document.createElement("td");
-    catTd.textContent = t.category;
-
-    const descTd = document.createElement("td");
-    descTd.textContent = t.description || "";
-
-    const amtTd = document.createElement("td");
     const amount = Number(t.amount) || 0;
-    const sign = t.type === "expense" ? "-" : "+";
-    amtTd.textContent = `${sign}$${amount.toFixed(2)}`;
-    amtTd.className = t.type === "expense" ? "expense" : "income";
+    const isInc = (t.isIncome === 1 || t.type === "income");
+    const sign = isInc ? "+" : "-";
+    const cssClass = isInc ? "income" : "expense";
 
-    tr.append(dateTd, typeTd, catTd, descTd, amtTd);
+    tr.innerHTML = `
+      <td>${t.date}</td>
+      <td>${isInc ? 'income' : 'expense'}</td>
+      <td>${t.category}</td>
+      <td>${t.description || ""}</td>
+      <td class="${cssClass}">${sign}$${amount.toFixed(2)}</td>
+    `;
     tbody.appendChild(tr);
   });
 });
