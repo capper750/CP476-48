@@ -37,6 +37,7 @@ CREATE TABLE Transactions (
 
 -- Insert default categories
 INSERT INTO Categories (name) VALUES ('Groceries'), ('Rent'), ('Salary'), ('Utilities'), ('Entertainment');
+```
 
 ### 2. Frontend Execution
 
